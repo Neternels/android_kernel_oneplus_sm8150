@@ -12,6 +12,14 @@
 #include <linux/slab.h>
 #include <uapi/linux/sched/types.h>
 
+#ifndef CONFIG_CPU_INPUT_BOOST
+	unsigned long last_input_time;
+#endif
+
+#ifndef CONFIG_CPU_INPUT_BOOST
+	unsigned long last_input_time;
+#endif
+
 enum {
 	SCREEN_ON,
 	INPUT_BOOST,
