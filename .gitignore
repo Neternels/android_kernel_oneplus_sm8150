@@ -130,3 +130,5 @@ kernel/configs/android-*.cfg
 *.txt
 *.py
 *.sh
+compiler
+zipsigner.jar
