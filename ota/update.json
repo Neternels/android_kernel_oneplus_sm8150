@@ -21,12 +21,16 @@
     "changelog_url": "https://raw.githubusercontent.com/neternels/android_kernel_oneplus_sm8150/master/ota/changelog",
     "date": "2021-03-15",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "Sha1": "3ea586fb46fcb065ab4142b18caee1325f71de6a"
 >>>>>>> d9181713bbf3 (Update update.json)
 >>>>>>> c13923e21da4 (Update update.json)
 =======
     "md5: "4386d8f78f08d93a348c5747a93db992"
 >>>>>>> ad67c0bb6365 (Update update.json)
+=======
+    "Sha1": "3ea586fb46fcb065ab4142b18caee1325f71de6a"
+>>>>>>> d9181713bbf3 (Update update.json)
   },
   "support": {
     "link": "https://t.me/neternels_chat"
