@@ -9,11 +9,15 @@ Build Number: 3.0
 ```
 ## Changelog
 ```
+<<<<<<< HEAD
 -3.1:
 -Kernel upstreamed to 4.14.227
 -Lots of scheduler patches from mainline
 -Optimized PID map reads (improved performance and battery life)
 -Update 12ms PELT half-life values
+=======
+<<<<<<< HEAD
+>>>>>>> bd53fdb77c9d (Update changelog)
 -3.0:
 -Kernel upstreamed to Linux Stable 4.14.225
 -F2FS upstreamed to latest f2fs-5.12-rc1 tag
@@ -23,6 +27,12 @@ Build Number: 3.0
 -Get rid of ZRAM in favor of VBSWAP (Improved memory management, especially for OOS folks)
 -More GPU related refinements
 -Other minor improvements
+=======
+-NetErnels-1.0:
+-added system v ipc
+-added realtek, ralink, mediatek, atmel, ath9k drivers
+-enabled all cgroups and namespaces
+>>>>>>> 34eb648e0fc4 (Update changelog)
 -2.2:
 -Use power efficient workqueues where possible
 -Refine GPU clock (190MHz now the default min)
