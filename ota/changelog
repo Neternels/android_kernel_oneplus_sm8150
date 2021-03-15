@@ -10,6 +10,7 @@ Build Number: 3.0
 ## Changelog
 ```
 <<<<<<< HEAD
+<<<<<<< HEAD
 -3.1:
 -Kernel upstreamed to 4.14.227
 -Lots of scheduler patches from mainline
@@ -28,10 +29,15 @@ Build Number: 3.0
 -More GPU related refinements
 -Other minor improvements
 =======
+=======
+>>>>>>> 34eb648e0fc4 (Update changelog)
 -NetErnels-1.0:
 -added system v ipc
 -added realtek, ralink, mediatek, atmel, ath9k drivers
 -enabled all cgroups and namespaces
+<<<<<<< HEAD
+>>>>>>> 34eb648e0fc4 (Update changelog)
+=======
 >>>>>>> 34eb648e0fc4 (Update changelog)
 -2.2:
 -Use power efficient workqueues where possible
