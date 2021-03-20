@@ -2,6 +2,7 @@
   "kernel": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "name": "nem0 Kernel",
     "version": "v3.1",
     "link": "https://github.com/nem0-z/android_kernel_oneplus_sm8150/releases/download/3.1/nem0-Kernel-v3.1.zip",
@@ -15,11 +16,14 @@
 =======
 =======
 >>>>>>> ad67c0bb6365 (Update update.json)
+=======
+>>>>>>> c283a6623eb6 (Update update.json)
     "name": "NetErnels-Kernel",
     "version": "NetErnels-1.0",
     "link": "https://github.com/Neternels/android_kernel_oneplus_sm8150/releases/download/NetErnels-1.0/NetErnels-hotdog-4.14.224-signed.zip",
     "changelog_url": "https://raw.githubusercontent.com/neternels/android_kernel_oneplus_sm8150/master/ota/changelog",
     "date": "2021-03-15",
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     "Sha1": "3ea586fb46fcb065ab4142b18caee1325f71de6a"
@@ -31,6 +35,9 @@
 =======
     "Sha1": "3ea586fb46fcb065ab4142b18caee1325f71de6a"
 >>>>>>> d9181713bbf3 (Update update.json)
+=======
+    "Sha1": "3ea586fb46fcb065ab4142b18caee1325f71de6a"
+>>>>>>> c283a6623eb6 (Update update.json)
   },
   "support": {
     "link": "https://t.me/neternels_chat"
