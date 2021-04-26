@@ -32,8 +32,25 @@ struct victim_info {
 	unsigned long size;
 };
 
+/* Pulled from the Android framework. Lower adj means higher priority. */
+static const unsigned short adjs[] = {
+	SHRT_MAX + 1, /* Include all positive adjs in the final range */
+	950, /* CACHED_APP_LMK_FIRST_ADJ */
+	900, /* CACHED_APP_MIN_ADJ */
+	800, /* SERVICE_B_ADJ */
+	700, /* PREVIOUS_APP_ADJ */
+	600, /* HOME_APP_ADJ */
+	500, /* SERVICE_ADJ */
+	400, /* HEAVY_WEIGHT_APP_ADJ */
+	300, /* BACKUP_APP_ADJ */
+	250, /* PERCEPTIBLE_LOW_APP_ADJ */
+	200, /* PERCEPTIBLE_APP_ADJ */
+	100, /* VISIBLE_APP_ADJ */
+	50, /* PERCEPTIBLE_RECENT_FOREGROUND_APP_ADJ */
+	0 /* FOREGROUND_APP_ADJ */
+};
+
 static struct victim_info victims[MAX_VICTIMS] __cacheline_aligned_in_smp;
-static struct task_struct *task_bucket[SHRT_MAX + 1] __cacheline_aligned;
 static DECLARE_WAIT_QUEUE_HEAD(oom_waitq);
 static DECLARE_COMPLETION(reclaim_done);
 static __cacheline_aligned_in_smp DEFINE_RWLOCK(mm_free_lock);
