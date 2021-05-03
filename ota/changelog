@@ -9,6 +9,16 @@ Build Number: 3.0
 ```
 ## Changelog
 ```
+-NetErnels-4.0
+-Kernel upstreamed to 4.14.232
+-Added all dtb files
+-Added SDR support
+-Added Bluetooth drivers support
+-Added DVB support
+-Added USB mass storage support 
+-Added other nethunter-related patches
+-Added all image types
+
 -NetErnels-3.0
 -Default governor is userspace
 -Enabled QT I/O Scheduler
