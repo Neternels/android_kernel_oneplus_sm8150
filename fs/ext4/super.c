@@ -4948,10 +4948,8 @@ static int ext4_commit_super(struct super_block *sb, int sync)
 	struct buffer_head *sbh = EXT4_SB(sb)->s_sbh;
 	int error = 0;
 
-	if (!sbh)
-		return -EINVAL;
-	if (block_device_ejected(sb))
-		return -ENODEV;
+	if (!sbh || block_device_ejected(sb))
+		return error;
 
 	/*
 	 * If the file system is mounted read-only, don't update the

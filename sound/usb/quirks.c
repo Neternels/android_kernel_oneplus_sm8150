@@ -66,12 +66,8 @@ static int create_composite_quirk(struct snd_usb_audio *chip,
 		if (!iface)
 			continue;
 		if (quirk->ifnum != probed_ifnum &&
-		    !usb_interface_claimed(iface)) {
-			err = usb_driver_claim_interface(driver, iface,
-							 USB_AUDIO_IFACE_UNUSED);
-			if (err < 0)
-				return err;
-		}
+		    !usb_interface_claimed(iface))
+			usb_driver_claim_interface(driver, iface, (void *)-1L);
 	}
 
 	return 0;
@@ -402,12 +398,8 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
 			continue;
 
 		err = create_autodetect_quirk(chip, iface, driver);
-		if (err >= 0) {
-			err = usb_driver_claim_interface(driver, iface,
-							 USB_AUDIO_IFACE_UNUSED);
-			if (err < 0)
-				return err;
-		}
+		if (err >= 0)
+			usb_driver_claim_interface(driver, iface, (void *)-1L);
 	}
 
 	return 0;

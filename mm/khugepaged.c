@@ -597,17 +597,17 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
 		    mmu_notifier_test_young(vma->vm_mm, address))
 			referenced++;
 	}
-
-	if (unlikely(!writable)) {
-		result = SCAN_PAGE_RO;
-	} else if (unlikely(!referenced)) {
-		result = SCAN_LACK_REFERENCED_PAGE;
+	if (likely(writable)) {
+		if (likely(referenced)) {
+			result = SCAN_SUCCEED;
+			trace_mm_collapse_huge_page_isolate(page, none_or_zero,
+							    referenced, writable, result);
+			return 1;
+		}
 	} else {
-		result = SCAN_SUCCEED;
-		trace_mm_collapse_huge_page_isolate(page, none_or_zero,
-						    referenced, writable, result);
-		return 1;
+		result = SCAN_PAGE_RO;
 	}
+
 out:
 	release_pte_pages(pte, _pte);
 	trace_mm_collapse_huge_page_isolate(page, none_or_zero,
