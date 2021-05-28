@@ -4139,8 +4139,7 @@ LedControlUSB(
 		return;
 	}
 
-	if (ledpriv->bRegUseLed == _FALSE ||
-	    padapter->registrypriv.led_ctrl == 0)
+	if (ledpriv->bRegUseLed == _FALSE)
 		return;
 
 	/* if(priv->bInHctTest) */

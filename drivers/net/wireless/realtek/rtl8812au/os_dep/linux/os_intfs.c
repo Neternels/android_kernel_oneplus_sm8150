@@ -39,7 +39,7 @@ int rtw_vrtl_carrier_sense = AUTO_VCS;
 int rtw_vcs_type = RTS_CTS;
 int rtw_rts_thresh = 2347;
 int rtw_frag_thresh = 2346;
-int rtw_preamble = PREAMBLE_AUTO;/* long, short, auto */
+int rtw_preamble = PREAMBLE_LONG;/* long, short, auto */
 int rtw_scan_mode = 1;/* active, passive */
 /* int smart_ps = 1; */
 #ifdef CONFIG_POWER_SAVING
@@ -72,9 +72,6 @@ int rtw_scan_mode = 1;/* active, passive */
 	int rtw_lps_chk_by_tp = 0;
 #endif /* CONFIG_POWER_SAVING */
 
-int rtw_monitor_disable_1m = 0;
-module_param(rtw_monitor_disable_1m, int, 0644);
-MODULE_PARM_DESC(rtw_monitor_disable_1m, "Disable default 1Mbps rate for monitor injected frames");
 
 module_param(rtw_ips_mode, int, 0644);
 MODULE_PARM_DESC(rtw_ips_mode, "The default IPS mode");
@@ -84,32 +81,28 @@ MODULE_PARM_DESC(rtw_lps_level, "The default LPS level");
 
 module_param(rtw_lps_chk_by_tp, int, 0644);
 
-/* LPS:
+/* LPS: 
  * rtw_smart_ps = 0 => TX: pwr bit = 1, RX: PS_Poll
  * rtw_smart_ps = 1 => TX: pwr bit = 0, RX: PS_Poll
  * rtw_smart_ps = 2 => TX: pwr bit = 0, RX: NullData with pwr bit = 0
 */
-int rtw_smart_ps = 0;
+int rtw_smart_ps = 2;
 
 int rtw_max_bss_cnt = 0;
 module_param(rtw_max_bss_cnt, int, 0644);
-#ifdef CONFIG_WMMPS_STA
-/* WMMPS:
+#ifdef CONFIG_WMMPS_STA	
+/* WMMPS: 
  * rtw_smart_ps = 0 => Only for fw test
  * rtw_smart_ps = 1 => Refer to Beacon's TIM Bitmap
  * rtw_smart_ps = 2 => Don't refer to Beacon's TIM Bitmap
 */
-int rtw_wmm_smart_ps = 1;
+int rtw_wmm_smart_ps = 2;
 #endif /* CONFIG_WMMPS_STA */
 
 int rtw_check_fw_ps = 1;
 
 #ifdef CONFIG_TX_EARLY_MODE
 int rtw_early_mode = 1;
-#endif
-
-#ifdef CONFIG_RTW_SW_LED
-int rtw_led_ctrl = 1; // default to normal blink
 #endif
 
 int rtw_usb_rxagg_mode = 2;/* RX_AGG_DMA=1, RX_AGG_USB=2 */
@@ -122,9 +115,13 @@ module_param(rtw_dynamic_agg_enable, int, 0644);
 * please refer to "How_to_set_driver_debug_log_level.doc" to set the available level.
 */
 #ifdef CONFIG_RTW_DEBUG
-uint rtw_drv_log_level = _DRV_NONE_;
+#ifdef RTW_LOG_LEVEL
+	uint rtw_drv_log_level = (uint)RTW_LOG_LEVEL; /* from Makefile */
+#else
+	uint rtw_drv_log_level = _DRV_INFO_;
+#endif
 module_param(rtw_drv_log_level, uint, 0644);
-MODULE_PARM_DESC(rtw_drv_log_level, "set log level when insert driver module, default log level is _DRV_NONE_ = 0");
+MODULE_PARM_DESC(rtw_drv_log_level, "set log level when insert driver module, default log level is _DRV_INFO_ = 4");
 #endif
 int rtw_radio_enable = 1;
 int rtw_long_retry_lmt = 7;
@@ -185,7 +182,7 @@ int rtw_bw_mode = CONFIG_RTW_CUSTOMIZE_BWMODE;
 int rtw_bw_mode = 0x21;
 #endif
 int rtw_ampdu_enable = 1;/* for enable tx_ampdu , */ /* 0: disable, 0x1:enable */
-int rtw_rx_stbc = 3;/* 0: disable, bit(0):enable 2.4g, bit(1):enable 5g, default is set to enable 2.4GHZ for IOT issue with bufflao's AP at 5GHZ */
+int rtw_rx_stbc = 1;/* 0: disable, bit(0):enable 2.4g, bit(1):enable 5g, default is set to enable 2.4GHZ for IOT issue with bufflao's AP at 5GHZ */
 #if (defined(CONFIG_RTL8814A) || defined(CONFIG_RTL8822B)) && defined(CONFIG_PCI_HCI)
 int rtw_rx_ampdu_amsdu = 2;/* 0: disabled, 1:enabled, 2:auto . There is an IOT issu with DLINK DIR-629 when the flag turn on */
 #elif (defined(CONFIG_RTL8822B) && defined(CONFIG_SDIO_HCI))
@@ -292,7 +289,7 @@ But Softap must be SHUT DOWN once P2P decide to set up connection and become a G
 #endif
 
 #ifdef CONFIG_BT_COEXIST
-int rtw_btcoex_enable = 0;
+int rtw_btcoex_enable = 2;
 module_param(rtw_btcoex_enable, int, 0644);
 MODULE_PARM_DESC(rtw_btcoex_enable, "BT co-existence on/off, 0:off, 1:on, 2:by efuse");
 
@@ -467,12 +464,6 @@ module_param(rtw_pci_aspm_enable, int, 0644);
 #ifdef CONFIG_TX_EARLY_MODE
 module_param(rtw_early_mode, int, 0644);
 #endif
-
-#ifdef CONFIG_RTW_SW_LED
-module_param(rtw_led_ctrl, int, 0644);
-MODULE_PARM_DESC(rtw_led_ctrl,"Led Control: 0=Always off, 1=Normal blink, 2=Always on");
-#endif
-
 #ifdef CONFIG_ADAPTOR_INFO_CACHING_FILE
 char *rtw_adaptor_info_caching_file_path = "/data/misc/wifi/rtw_cache";
 module_param(rtw_adaptor_info_caching_file_path, charp, 0644);
@@ -1018,9 +1009,6 @@ uint loadparam(_adapter *padapter)
 #ifdef CONFIG_TX_EARLY_MODE
 	registry_par->early_mode = (u8)rtw_early_mode;
 #endif
-#ifdef CONFIG_RTW_SW_LED
-	registry_par->led_ctrl = (u8)rtw_led_ctrl;
-#endif
 	registry_par->lowrate_two_xmit = (u8)rtw_lowrate_two_xmit;
 	registry_par->rf_config = (u8)rtw_rf_config;
 	registry_par->low_power = (u8)rtw_low_power;
@@ -1222,8 +1210,6 @@ uint loadparam(_adapter *padapter)
 #ifdef CONFIG_FW_HANDLE_TXBCN
 	registry_par->fw_tbtt_rpt = rtw_tbtt_rpt;
 #endif
-
-	registry_par->monitor_disable_1m = (u8)rtw_monitor_disable_1m;
 
 	return status;
 }
@@ -1433,7 +1419,7 @@ static u8 is_rtw_ndev(struct net_device *ndev)
 static int rtw_ndev_notifier_call(struct notifier_block *nb, unsigned long state, void *ptr)
 {
 	struct net_device *ndev;
-	_adapter *adapter;
+	_adapter *adapter = rtw_netdev_priv(ndev);
 
 	if (ptr == NULL)
 		return NOTIFY_DONE;
@@ -1522,9 +1508,7 @@ static const struct net_device_ops rtw_netdev_ops = {
 #endif
 	.ndo_set_mac_address = rtw_net_set_mac_address,
 	.ndo_get_stats = rtw_net_get_stats,
-#ifdef CONFIG_WIRELESS_EXT
 	.ndo_do_ioctl = rtw_ioctl,
-#endif
 };
 #endif
 
@@ -1609,11 +1593,9 @@ struct net_device *rtw_init_netdev(_adapter *old_padapter)
 	if (!pnetdev)
 		return NULL;
 
-	pnetdev->mtu = WLAN_DATA_MAXLEN;
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 10, 0))
 	pnetdev->min_mtu = WLAN_MIN_ETHFRM_LEN;
+	pnetdev->mtu = WLAN_DATA_MAXLEN;
 	pnetdev->max_mtu = WLAN_DATA_MAXLEN;
-#endif
 
 	pnetdev->dev.type = &wlan_type;
 	padapter = rtw_netdev_priv(pnetdev);
@@ -1653,7 +1635,7 @@ struct net_device *rtw_init_netdev(_adapter *old_padapter)
 	/* pnetdev->tx_timeout = NULL; */
 	pnetdev->watchdog_timeo = HZ * 3; /* 3 second timeout */
 
-#ifdef CONFIG_WIRELESS_EXT
+#if defined(CONFIG_WIRELESS_EXT) && !defined(CONFIG_CFG80211_WEXT)
 	pnetdev->wireless_handlers = (struct iw_handler_def *)&rtw_handlers_def;
 #endif
 
@@ -1744,11 +1726,9 @@ int rtw_os_ndev_register(_adapter *adapter, const char *name)
 	rtw_init_netdev_name(ndev, name);
 
 	_rtw_memcpy(ndev->dev_addr, adapter_mac_addr(adapter), ETH_ALEN);
-#if defined(CONFIG_NET_NS)
-    dev_net_set(ndev, wiphy_net(adapter_to_wiphy(adapter)));
-#endif //defined(CONFIG_NET_NS)
 
 	/* Tell the network stack we exist */
+
 	if (rtnl_lock_needed)
 		ret = (register_netdev(ndev) == 0) ? _SUCCESS : _FAIL;
 	else
@@ -2832,9 +2812,7 @@ static const struct net_device_ops rtw_netdev_vir_if_ops = {
 	.ndo_start_xmit = rtw_xmit_entry,
 	.ndo_set_mac_address = rtw_net_set_mac_address,
 	.ndo_get_stats = rtw_net_get_stats,
-#ifdef CONFIG_WIRELESS_EXT
 	.ndo_do_ioctl = rtw_ioctl,
-#endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 	.ndo_select_queue	= rtw_select_queue,
 #endif
@@ -3389,7 +3367,7 @@ int _netdev_open(struct net_device *pnetdev)
 		rtw_cfg80211_init_wiphy(padapter);
 		rtw_cfg80211_init_wdev_data(padapter);
 		#endif
-		rtw_netif_carrier_on(pnetdev);  /* call this func when rtw_joinbss_event_callback return success */
+		/* rtw_netif_carrier_on(pnetdev); */ /* call this func when rtw_joinbss_event_callback return success */
 		rtw_netif_wake_queue(pnetdev);
 
 		#ifdef CONFIG_BR_EXT
@@ -3520,7 +3498,7 @@ int _netdev_open(struct net_device *pnetdev)
 	rtw_set_pwr_state_check_timer(pwrctrlpriv);
 #endif
 
-	rtw_netif_carrier_on(pnetdev); /* call this func when rtw_joinbss_event_callback return success */
+	/* rtw_netif_carrier_on(pnetdev); */ /* call this func when rtw_joinbss_event_callback return success */
 	rtw_netif_wake_queue(pnetdev);
 
 #ifdef CONFIG_BR_EXT

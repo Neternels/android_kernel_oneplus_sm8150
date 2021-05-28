@@ -120,7 +120,34 @@ static s32 update_txdesc(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz , u8 ba
 	} else
 		SET_TX_DESC_SEQ_8812(ptxdesc, pattrib->seqnum);
 
-	if ((pxmitframe->frame_tag & 0x0f) == DATA_FRAMETAG) {
+	/* injected frame */
+	if(pattrib->inject == 0xa5) {
+		SET_TX_DESC_RETRY_LIMIT_ENABLE_8812(ptxdesc, 1);
+		if (pattrib->retry_ctrl == _TRUE) {
+			SET_TX_DESC_DATA_RETRY_LIMIT_8812(ptxdesc, 6);
+		} else {
+			SET_TX_DESC_DATA_RETRY_LIMIT_8812(ptxdesc, 0);
+		}
+		if(pattrib->sgi == _TRUE) {
+			SET_TX_DESC_DATA_SHORT_8812(ptxdesc, 1);
+		} else {
+			SET_TX_DESC_DATA_SHORT_8812(ptxdesc, 0);
+		}
+
+		SET_TX_DESC_DISABLE_FB_8812(ptxdesc, 1); // svpcom: ?
+		SET_TX_DESC_USE_RATE_8812(ptxdesc, 1);
+		SET_TX_DESC_TX_RATE_8812(ptxdesc, MRateToHwRate(pattrib->rate));
+
+		if (pattrib->ldpc)
+			SET_TX_DESC_DATA_LDPC_8812(ptxdesc, 1);
+		SET_TX_DESC_DATA_STBC_8812(ptxdesc, pattrib->stbc & 3);
+		//SET_TX_DESC_GF_8812(ptxdesc, 1); // no MCS rates if sets, GreenField?
+		//SET_TX_DESC_LSIG_TXOP_EN_8812(ptxdesc, 1);
+		//SET_TX_DESC_HTC_8812(ptxdesc, 1);
+		//SET_TX_DESC_NO_ACM_8812(ptxdesc, 1);
+		SET_TX_DESC_DATA_BW_8812(ptxdesc, pattrib->bwmode); // 0 - 20 MHz, 1 - 40 MHz, 2 - 80 MHz
+
+	} else if ((pxmitframe->frame_tag & 0x0f) == DATA_FRAMETAG) {
 		/* RTW_INFO("pxmitframe->frame_tag == DATA_FRAMETAG\n");		 */
 
 		rtl8812a_fill_txdesc_sectype(pattrib, ptxdesc);
@@ -304,7 +331,7 @@ static s32 update_txdesc(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz , u8 ba
 			if (pattrib->retry_ctrl == _TRUE)
 				SET_TX_DESC_DATA_RETRY_LIMIT_8812(ptxdesc, 6);
 			else
-				SET_TX_DESC_DATA_RETRY_LIMIT_8812(ptxdesc, 0);
+				SET_TX_DESC_DATA_RETRY_LIMIT_8812(ptxdesc, 12);
 		}
 
 #ifdef CONFIG_XMIT_ACK
@@ -343,7 +370,6 @@ static s32 update_txdesc(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz , u8 ba
 	_dbg_dump_tx_info(padapter, pxmitframe->frame_tag, ptxdesc);
 	return pull;
 }
-
 
 #ifdef CONFIG_XMIT_THREAD_MODE
 /*
@@ -1114,13 +1140,11 @@ s32 rtl8812au_hostap_mgnt_xmit_entry(_adapter *padapter, _pkt *pkt)
 
 	/* offset 20 */
 
-
 	/* HW append seq */
 	ptxdesc->txdw4 |= cpu_to_le32(BIT(7)); /* Hw set sequence number */
 	ptxdesc->txdw3 |= cpu_to_le32((8 << 28)); /* set bit3 to 1. Suugested by TimChen. 2009.12.29. */
 
-
-	rtl8188eu_cal_txdesc_chksum(ptxdesc);
+	rtl8182eu_cal_txdesc_chksum(ptxdesc);
 	/* ----- end of fill tx desc ----- */
 
 	/*  */
@@ -1130,7 +1154,6 @@ s32 rtl8812au_hostap_mgnt_xmit_entry(_adapter *padapter, _pkt *pkt)
 
 	/* RTW_INFO("mgnt_xmit, len=%x\n", pxmit_skb->len); */
 
-
 	/* ----- prepare urb for submit ----- */
 
 	/* translate DMA FIFO addr to pipehandle */
@@ -1138,7 +1161,7 @@ s32 rtl8812au_hostap_mgnt_xmit_entry(_adapter *padapter, _pkt *pkt)
 	pipe = usb_sndbulkpipe(pdvobj->pusbdev, pHalData->Queue2EPNum[(u8)MGT_QUEUE_INX] & 0x0f);
 
 	usb_fill_bulk_urb(urb, pdvobj->pusbdev, pipe,
-		pxmit_skb->data, pxmit_skb->len, rtl8192cu_hostap_mgnt_xmit_cb, pxmit_skb);
+		pxmit_skb->data, pxmit_skb->len, rtl8812au_hostap_mgnt_xmit_cb, pxmit_skb);
 
 	urb->transfer_flags |= URB_ZERO_PACKET;
 	usb_anchor_urb(urb, &phostapdpriv->anchored);

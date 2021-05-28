@@ -1,22 +1,38 @@
 EXTRA_CFLAGS += $(USER_EXTRA_CFLAGS) -fno-pie
 EXTRA_CFLAGS += -O1
+#EXTRA_CFLAGS += -O3
+#EXTRA_CFLAGS += -Wall
+#EXTRA_CFLAGS += -Wextra
+#EXTRA_CFLAGS += -Werror
+#EXTRA_CFLAGS += -pedantic
+#EXTRA_CFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
 EXTRA_CFLAGS += -Wno-unused-variable
 EXTRA_CFLAGS += -Wno-unused-value
 EXTRA_CFLAGS += -Wno-unused-label
 EXTRA_CFLAGS += -Wno-unused-parameter
 EXTRA_CFLAGS += -Wno-unused-function
-#EXTRA_CFLAGS += -Wno-parentheses-equality
-#EXTRA_CFLAGS += -Wno-pointer-bool-conversion
-EXTRA_CFLAGS += -Wno-unknown-pragmas
 EXTRA_CFLAGS += -Wno-unused
+EXTRA_CFLAGS += -Wno-date-time
+EXTRA_CFLAGS += -Wno-uninitialized
+EXTRA_CFLAGS += -Wno-cast-function-type
+EXTRA_CFLAGS += -Wno-misleading-indentation
+EXTRA_CFLAGS += -Wno-missing-field-initializers
+#EXTRA_CFLAGS += -Wimplicit-fallthrough
 EXTRA_CFLAGS += -Wno-vla -g
+#EXTRA_CFLAGS += -Wno-tautological-compare
+#EXTRA_CFLAGS += -Wno-incompatible-pointer-types
+#EXTRA_CFLAGS += -Wsign-conversion
+# Relax some warnings from '-Wextra' so we won't get flooded with warnings
+#EXTRA_CFLAGS += -Wno-sign-compare -Wno-sign-conversion
+#EXTRA_CFLAGS += -Wno-type-limits
 
-#GCC_VER_49 := $(shell echo `$(CC) -dumpversion | cut -f1-2 -d.` \>= 4.9 | bc )
-#ifeq ($(GCC_VER_49),1)
+GCC_VER_49 := $(shell echo `$(CC) -dumpversion | cut -f1-2 -d.` \>= 4.9 | bc )
+ifeq ($(GCC_VER_49),1)
 EXTRA_CFLAGS += -Wno-date-time	# Fix compile error && warning on gcc 4.9 and later
-#endif
+endif
 
 EXTRA_CFLAGS += -I$(src)/include
+
 EXTRA_LDFLAGS += --strip-debug
 
 ########################## WIFI IC ############################
@@ -25,8 +41,6 @@ CONFIG_RTL8821A = y
 CONFIG_RTL8814A = y
 ######################### Interface ###########################
 CONFIG_USB_HCI = y
-########################### Android ###########################
-CONFIG_SIGNAL_DISPLAY_DBM = y
 ########################## Features ###########################
 CONFIG_NET_NS = y
 CONFIG_MP_INCLUDED = y
@@ -53,7 +67,6 @@ CONFIG_REDUCE_TX_CPU_LOADING = n
 CONFIG_BR_EXT = y
 CONFIG_TDLS = n
 CONFIG_WIFI_MONITOR = y
-CONFIG_DISABLE_REGD_C = y
 CONFIG_MCC_MODE = n
 CONFIG_APPEND_VENDOR_IE_ENABLE = n
 CONFIG_RTW_NAPI = y
@@ -66,10 +79,10 @@ CONFIG_RTW_WIFI_HAL = n
 CONFIG_ICMP_VOQ = n
 CONFIG_IP_R_MONITOR = n #arp VOQ and high rate
 ########################## Debug ###########################
-CONFIG_RTW_DEBUG = n
+CONFIG_RTW_DEBUG = y
 # default log level is _DRV_INFO_ = 4,
 # please refer to "How_to_set_driver_debug_log_level.doc" to set the available level.
-CONFIG_RTW_LOG_LEVEL = 2
+CONFIG_RTW_LOG_LEVEL = 4
 ######################## Wake On Lan ##########################
 CONFIG_WOWLAN = n
 #bit2: deauth, bit1: unicast, bit0: magic pkt.
@@ -89,17 +102,14 @@ CONFIG_AP_WOWLAN = n
 ######### Notify SDIO Host Keep Power During Syspend ##########
 CONFIG_RTW_SDIO_PM_KEEP_POWER = y
 ###################### MP HW TX MODE FOR VHT #######################
-CONFIG_MP_VHT_HW_TX_MODE = n
+CONFIG_MP_VHT_HW_TX_MODE = y
 ###################### Platform Related #######################
 CONFIG_PLATFORM_I386_PC = y
-CONFIG_PLATFORM_ANDROID_ARM64 = n
 CONFIG_PLATFORM_ARM_RPI = n
 CONFIG_PLATFORM_ARM64_RPI = n
-CONFIG_PLATFORM_ARM_NV_NANO = n
 CONFIG_PLATFORM_ANDROID_X86 = n
 CONFIG_PLATFORM_ANDROID_INTEL_X86 = n
 CONFIG_PLATFORM_JB_X86 = n
-CONFIG_PLATFORM_OPENWRT_NEO2 = n
 CONFIG_PLATFORM_ARM_S3C2K4 = n
 CONFIG_PLATFORM_ARM_PXA2XX = n
 CONFIG_PLATFORM_ARM_S3C6K4 = n
@@ -164,13 +174,7 @@ CONFIG_CUSTOMER_HUAWEI_GENERAL = n
 
 CONFIG_DRVEXT_MODULE = n
 
-ifeq ($(CONFIG_RTL8812AU), )
-ifneq (,$(findstring /usr/lib/dkms,$(PATH)))
-    export TopDIR ?= $(shell pwd)
-else
-export TopDIR ?= $(srctree)/$(src)
-endif
-endif
+export TopDIR ?= $(shell pwd)
 
 ########### COMMON  #################################
 ifeq ($(CONFIG_USB_HCI), y)
@@ -179,7 +183,7 @@ endif
 
 ifeq ($(CONFIG_RTL8812A)_$(CONFIG_RTL8821A)_$(CONFIG_RTL8814A), y_y_y)
 
-EXTRA_CFLAGS += -DDRV_NAME=\"rtl88XXau\"
+EXTRA_CFLAGS += -DDRV_NAME=\"88XXau\"
 ifeq ($(CONFIG_USB_HCI), y)
 USER_MODULE_NAME = 88XXau
 endif
@@ -196,10 +200,12 @@ _OS_INTFS_FILES :=	os_dep/osdep_service.o \
 			os_dep/linux/mlme_linux.o \
 			os_dep/linux/recv_linux.o \
 			os_dep/linux/ioctl_cfg80211.o \
+			os_dep/linux/rtw_cfgvendor.o \
 			os_dep/linux/wifi_regd.o \
 			os_dep/linux/rtw_android.o \
 			os_dep/linux/rtw_proc.o \
-			os_dep/linux/rtw_rhashtable.o
+			os_dep/linux/rtw_rhashtable.o \
+			os_dep/linux/rtw_radiotap.o
 
 ifeq ($(CONFIG_MP_INCLUDED), y)
 _OS_INTFS_FILES += os_dep/linux/ioctl_mp.o
@@ -454,7 +460,7 @@ endif
 ifeq ($(CONFIG_RTL8814A), y)
 ## ADD NEW VHT MP HW TX MODE ##
 #EXTRA_CFLAGS += -DCONFIG_MP_VHT_HW_TX_MODE
-CONFIG_MP_VHT_HW_TX_MODE = n
+CONFIG_MP_VHT_HW_TX_MODE = y
 ##########################################
 RTL871X = rtl8814a
 ifeq ($(CONFIG_USB_HCI), y)
@@ -1175,17 +1181,6 @@ MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
 INSTALL_PREFIX :=
 endif
 
-ifeq ($(CONFIG_PLATFORM_ARM_NV_NANO), y)
-EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
-EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
-ARCH := arm64
-KVER := $(shell uname -r)
-KSRC := /lib/modules/$(KVER)/build
-MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
-INSTALL_PREFIX :=
-STAGINGMODDIR := /lib/modules/$(KVER)/kernel/drivers/staging
-endif
-
 ifeq ($(CONFIG_PLATFORM_ARM_ODROIDC2), y)
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
 EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
@@ -1330,17 +1325,6 @@ KVER:= 3.1.10
 KSRC:= /usr/src/Mstar_kernel/3.1.10/
 endif
 
-ifeq ($(CONFIG_PLATFORM_ANDROID_ARM64), y)
-# For this to work, change the "modules:" section is also needed, in order to build with CLANG.
-# "$(MAKE) ARCH=$(ARCH) SUBARCH=$(ARCH) REAL_CC=${CC_DIR}/clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) O="$(KBUILD_OUTPUT)" modules"
-EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN -fno-pic
-EXTRA_CFLAGS += -DRTW_ENABLE_WIFI_CONTROL_FUNC -DCONFIG_RADIO_WORK
-#Enable this to have two interfaces:
-#EXTRA_CFLAGS += -DCONFIG_CONCURRENT_MODE
-EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
-EXTRA_CFLAGS += -DCONFIG_P2P_IPS
-endif
-
 ifeq ($(CONFIG_PLATFORM_ANDROID_X86), y)
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
 SUBARCH := $(shell uname -m | sed -e s/i.86/i386/)
@@ -1436,16 +1420,6 @@ CROSS_COMPILE := mips-openwrt-linux-
 KSRC := /home/alex/test_openwrt/tmp/linux-2.6.30.9
 endif
 
-# This is how I built for openwrt Neo2 platform. --Ben
-ifeq ($(CONFIG_PLATFORM_OPENWRT_NEO2), y)
-EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
-ARCH := arm64
-CROSS_COMPILE := aarch64-openwrt-linux-
-#export PATH=$PATH:/home/greearb/git/openwrt-neo2-dev/staging_dir/toolchain-aarch64_cortex-a53_gcc-7.3.0_musl/bin/
-#export STAGING_DIR=/home/greearb/git/openwrt-neo2-dev/staging_dir
-KSRC := /home/greearb/git/openwrt-neo2-dev/build_dir/target-aarch64_cortex-a53_musl/linux-sunxi_cortexa53/linux-4.14.78
-endif
-
 ifeq ($(CONFIG_PLATFORM_DMP_PHILIPS), y)
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN -DRTK_DMP_PLATFORM
 ARCH := mips
@@ -1484,13 +1458,9 @@ endif
 
 ifeq ($(CONFIG_PLATFORM_FS_MX61), y)
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
-EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
 ARCH := arm
-CROSS_COMPILE ?=
-KVER ?= $(shell uname -r)
-KSRC := /lib/modules/$(KVER)/build
-MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
-INSTALL_PREFIX :=
+CROSS_COMPILE := /home/share/CusEnv/FreeScale/arm-eabi-4.4.3/bin/arm-eabi-
+KSRC ?= /home/share/CusEnv/FreeScale/FS_kernel_env
 endif
 
 ifeq ($(CONFIG_PLATFORM_ACTIONS_ATJ227X), y)
@@ -2233,20 +2203,21 @@ $(MODULE_NAME)-y += $(_PLATFORM_FILES)
 
 $(MODULE_NAME)-$(CONFIG_MP_INCLUDED) += core/rtw_mp.o
 
-obj-$(CONFIG_88XXAU) := $(MODULE_NAME).o
+ifeq ($(CONFIG_RTL8723B), y)
+$(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
+endif
+
+obj-$(CONFIG_RTL8812AU) := $(MODULE_NAME).o
 
 else
 
-export CONFIG_88XXAU = m
+export CONFIG_RTL8812AU = m
 
 all: modules
 
 modules:
 	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd)  modules
-	@echo "---------------------------------------------------------------------------"
-	@echo "Visit https://github.com/aircrack-ng/rtl8812au for support/reporting issues"
-	@echo "or check for newer versions (branches) of these drivers.                   "
-	@echo "---------------------------------------------------------------------------"
+
 strip:
 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
 

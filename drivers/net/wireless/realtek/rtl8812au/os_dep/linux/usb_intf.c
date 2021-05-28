@@ -23,6 +23,10 @@
 #error "CONFIG_USB_HCI shall be on!\n"
 #endif
 
+#if defined(PLATFORM_LINUX) && defined (PLATFORM_WINDOWS)
+#error "Shall be Linux or Windows, but not both!\n"
+#endif
+
 #ifdef CONFIG_80211N_HT
 extern int rtw_ht_enable;
 extern int rtw_bw_mode;
@@ -177,6 +181,7 @@ static struct usb_device_id rtw_usb_id_tbl[] = {
 	{USB_DEVICE(0x2357, 0x010E), .driver_info = RTL8812}, /* TP-Link - Archer T4UH AC1300 */
 	{USB_DEVICE(0x2357, 0x010F), .driver_info = RTL8812}, /* TP-Link - T4UHP */
 	{USB_DEVICE(0x2357, 0x0122), .driver_info = RTL8812}, /* TP-Link - T4UHP (other) */
+	{USB_DEVICE(0x2357, 0x011F), .driver_info = RTL8812}, /* TP-Link - Archer AC600 T2U Nano */
 	{USB_DEVICE(0x20F4, 0x805B), .driver_info = RTL8812}, /* TRENDnet - */
 	{USB_DEVICE(0x0411, 0x025D), .driver_info = RTL8812}, /* Buffalo - WI-U3-866D */
 	{USB_DEVICE(0x050D, 0x1109), .driver_info = RTL8812}, /* Belkin F9L1109 - SerComm */
@@ -214,7 +219,6 @@ static struct usb_device_id rtw_usb_id_tbl[] = {
 	{USB_DEVICE(0x2357, 0x011E), .driver_info = RTL8821}, /* TP Link - T2U Nano */
 	{USB_DEVICE(0x2357, 0x0122), .driver_info = RTL8821}, /* TP Link - T2U Nano */
 	{USB_DEVICE(0x2357, 0x0120), .driver_info = RTL8821}, /* TP Link - T2U Plus */
-	{USB_DEVICE(0x2357, 0x011F), .driver_info = RTL8821}, /* TP-Link - Archer AC600 T2U Nano */
 #endif
 
 #ifdef CONFIG_RTL8814A

@@ -258,7 +258,7 @@ void rtw_txpwr_init_regd(struct rf_ctl_t *rfctl)
 		);
 		if (rfctl->regd_name)
 			break;
-		__attribute__ ((__fallthrough__));
+		// Intentional fallthrough
 	default:
 		rfctl->regd_name = regd_str(TXPWR_LMT_WW);
 		RTW_PRINT("assign %s for default case\n", regd_str(TXPWR_LMT_WW));
@@ -1343,11 +1343,7 @@ void mgt_dispatcher(_adapter *padapter, union recv_frame *precv_frame)
 			ptable->func = &OnAuth;
 		else
 			ptable->func = &OnAuthClient;
-#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 4, 0)
-	__attribute__ ((fallthrough));
-#else
-			__attribute__ ((__fallthrough__));
-#endif
+	// Intentional fallthrough
 	case WIFI_ASSOCREQ:
 	case WIFI_REASSOCREQ:
 		_mgt_dispatcher(padapter, ptable, precv_frame);
@@ -3739,10 +3735,8 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	u8			action = P2P_PUB_ACTION_ACTION;
 	u32			p2poui = cpu_to_be32(P2POUI);
 	u8			oui_subtype = P2P_GO_NEGO_REQ;
-	u8			*wpsie;
-	u8			p2pie[ 255 ] = { 0x00 };
-	u8			p2pielen = 0;
-	u8			wpsielen = 0;
+	u8			wpsie[255] = { 0x00 }, p2pie[255] = { 0x00 };
+	u8			wpsielen = 0, p2pielen = 0;
 	u16			len_channellist_attr = 0;
 #ifdef CONFIG_WFD
 	u32					wfdielen = 0;
@@ -3761,8 +3755,6 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	pmgntframe = alloc_mgtxmitframe(pxmitpriv);
 	if (pmgntframe == NULL)
 		return;
-
-	wpsie = rtw_zmalloc(256);
 
 	RTW_INFO("[%s] In\n", __FUNCTION__);
 	/* update attribute */
@@ -4127,8 +4119,6 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 
 	dump_mgntframe(padapter, pmgntframe);
 
-	kfree(wpsie);
-
 	return;
 
 }
@@ -4141,8 +4131,7 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	u8			action = P2P_PUB_ACTION_ACTION;
 	u32			p2poui = cpu_to_be32(P2POUI);
 	u8			oui_subtype = P2P_GO_NEGO_RESP;
-	u8			*wpsie;
-	u8			p2pie[ 255 ] = { 0x00 };
+	u8			wpsie[255] = { 0x00 }, p2pie[255] = { 0x00 };
 	u8			p2pielen = 0;
 	uint			wpsielen = 0;
 	u16			wps_devicepassword_id = 0x0000;
@@ -4165,8 +4154,6 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	pmgntframe = alloc_mgtxmitframe(pxmitpriv);
 	if (pmgntframe == NULL)
 		return;
-
-	wpsie = rtw_zmalloc(256);
 
 	RTW_INFO("[%s] In, result = %d\n", __FUNCTION__,  result);
 	/* update attribute */
@@ -4549,8 +4536,6 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	pattrib->last_txcmdsz = pattrib->pktlen;
 
 	dump_mgntframe(padapter, pmgntframe);
-
-	kfree(wpsie);
 
 	return;
 
@@ -7520,21 +7505,21 @@ void update_mgnt_tx_rate(_adapter *padapter, u8 rate)
 	/* RTW_INFO("%s(): rate = %x\n",__FUNCTION__, rate); */
 }
 
-
 void update_monitor_frame_attrib(_adapter *padapter, struct pkt_attrib *pattrib)
 {
 	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(padapter);
 	u8	wireless_mode;
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct xmit_priv		*pxmitpriv = &padapter->xmitpriv;
-	struct sta_info		*psta = NULL;
-	struct sta_priv		*pstapriv = &padapter->stapriv;
+	//struct sta_info		*psta = NULL;
+	//struct sta_priv		*pstapriv = &padapter->stapriv;
 
-	psta = rtw_get_stainfo(pstapriv, pattrib->ra);
+	//psta = rtw_get_stainfo(pstapriv, pattrib->ra);
 
 	pattrib->hdrlen = 24;
 	pattrib->nr_frags = 1;
 	pattrib->priority = 7;
+	pattrib->inject = 0xa5;
 	pattrib->mac_id = RTW_DEFAULT_MGMT_MACID;
 	pattrib->qsel = QSLT_MGNT;
 
@@ -7574,7 +7559,7 @@ void update_monitor_frame_attrib(_adapter *padapter, struct pkt_attrib *pattrib)
 
 	pattrib->seqnum = pmlmeext->mgnt_seq;
 
-	pattrib->retry_ctrl = _TRUE;
+	pattrib->retry_ctrl = _FALSE;
 
 	pattrib->mbssid = 0;
 	pattrib->hw_ssn_sel = pxmitpriv->hw_ssn_seq_no;
@@ -12303,7 +12288,7 @@ static void rtw_mlmeext_disconnect(_adapter *padapter)
 		self_action = MLME_ADHOC_STOPPED;
 	else {
 		RTW_INFO("state:0x%x\n", MLME_STATE(padapter));
-		//rtw_warn_on(1);
+		rtw_warn_on(1);
 	}
 
 	/* set_opmode_cmd(padapter, infra_client_with_mlme); */

@@ -266,7 +266,6 @@ uint	rtw_is_cckratesonly_included(u8 *rate)
 }
 */
 
-#ifdef CONFIG_WIRELESS_EXT
 static int search_p2p_wfd_ie(_adapter *padapter,
 		struct iw_request_info *info, struct wlan_network *pnetwork,
 		char *start, char *stop)
@@ -340,7 +339,6 @@ static int search_p2p_wfd_ie(_adapter *padapter,
 #endif /* CONFIG_P2P */
 	return _TRUE;
 }
-#endif
 static inline char *iwe_stream_mac_addr_proess(_adapter *padapter,
 		struct iw_request_info *info, struct wlan_network *pnetwork,
 		char *start, char *stop, struct iw_event *iwe)
@@ -784,7 +782,6 @@ static inline char   *iwe_stream_net_rsv_process(_adapter *padapter,
 	return start;
 }
 
-#ifdef CONFIG_WIRELESS_EXT
 static char *translate_scan(_adapter *padapter,
 		struct iw_request_info *info, struct wlan_network *pnetwork,
 		char *start, char *stop)
@@ -1201,9 +1198,7 @@ exit:
 
 	return ret;
 }
-#endif
 
-#ifdef CONFIG_WIRELESS_EXT
 static int rtw_wx_get_name(struct net_device *dev,
 			   struct iw_request_info *info,
 			   union iwreq_data *wrqu, char *extra)
@@ -12028,7 +12023,6 @@ free_buf:
 	return 0;
 }
 
-#ifdef CONFIG_WIRELESS_EXT
 static iw_handler rtw_handlers[] = {
 	NULL,					/* SIOCSIWCOMMIT */
 	rtw_wx_get_name,		/* SIOCGIWNAME */
@@ -12352,9 +12346,7 @@ static iw_handler rtw_private_handler[] = {
 	rtw_widi_set_probe_request,		/* 0x1F */
 #endif /* CONFIG_INTEL_WIDI */
 };
-#endif
 
-#ifdef CONFIG_WIRELESS_EXT
 #if WIRELESS_EXT >= 17
 static struct iw_statistics *rtw_get_wireless_stats(struct net_device *dev)
 {
@@ -12364,16 +12356,12 @@ static struct iw_statistics *rtw_get_wireless_stats(struct net_device *dev)
 	int tmp_qual = 0;
 	int tmp_noise = 0;
 
-#ifndef CONFIG_ALLOW_UNLINKED_NOISE_MONITOR
 	if (check_fwstate(&padapter->mlmepriv, _FW_LINKED) != _TRUE) {
 		piwstats->qual.qual = 0;
 		piwstats->qual.level = 0;
 		piwstats->qual.noise = 0;
 		/* RTW_INFO("No link  level:%d, qual:%d, noise:%d\n", tmp_level, tmp_qual, tmp_noise); */
-	}
-	else
-#endif
-    {
+	} else {
 #ifdef CONFIG_SIGNAL_DISPLAY_DBM
 		tmp_level = translate_percentage_to_dbm(padapter->recvpriv.signal_strength);
 #else
@@ -12414,10 +12402,10 @@ static struct iw_statistics *rtw_get_wireless_stats(struct net_device *dev)
 	return &padapter->iwstats;
 }
 #endif
-#endif
 
-#ifdef CONFIG_WIRELESS_EXT
-struct iw_handler_def rtw_handlers_def = {
+#if defined(CONFIG_WIRELESS_EXT) && !defined(CONFIG_CFG80211_WEXT)
+struct iw_handler_def rtw_handlers_def =
+{
 	.standard = rtw_handlers,
 	.num_standard = sizeof(rtw_handlers) / sizeof(iw_handler),
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 33)) || defined(CONFIG_WEXT_PRIV)
@@ -12430,6 +12418,7 @@ struct iw_handler_def rtw_handlers_def = {
 	.get_wireless_stats = rtw_get_wireless_stats,
 #endif
 };
+#endif
 
 /* copy from net/wireless/wext.c start
  * ----------------------------------------------------------------
@@ -12807,7 +12796,6 @@ exit:
 
 	return err;
 }
-#endif
 
 #ifdef CONFIG_COMPAT
 static int rtw_ioctl_compat_wext_private(struct net_device *dev, struct ifreq *rq)
@@ -12835,7 +12823,6 @@ static int rtw_ioctl_compat_wext_private(struct net_device *dev, struct ifreq *r
 }
 #endif /* CONFIG_COMPAT */
 
-#ifdef CONFIG_WIRELESS_EXT
 static int rtw_ioctl_standard_wext_private(struct net_device *dev, struct ifreq *rq)
 {
 	struct iw_point *iwp;
@@ -12867,8 +12854,6 @@ static int rtw_ioctl_wext_private(struct net_device *dev, struct ifreq *rq)
 #endif /* CONFIG_COMPAT */
 		return rtw_ioctl_standard_wext_private(dev, rq);
 }
-#endif /* CONFIG_WIRELESS_EXT */
-#endif /* also CONFIG_WIRELESS_EXT */
 
 int rtw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
 {
@@ -12876,7 +12861,6 @@ int rtw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
 	int ret = 0;
 
 	switch (cmd) {
-#ifdef CONFIG_WIRELESS_EXT
 	case RTL_IOCTL_WPA_SUPPLICANT:
 		ret = wpa_supplicant_ioctl(dev, &wrq->u.data);
 		break;
@@ -12884,9 +12868,11 @@ int rtw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
 	case RTL_IOCTL_HOSTAPD:
 		ret = rtw_hostapd_ioctl(dev, &wrq->u.data);
 		break;
+#ifdef CONFIG_WIRELESS_EXT
 	case SIOCSIWMODE:
 		ret = rtw_wx_set_mode(dev, NULL, &wrq->u, NULL);
 		break;
+#endif
 #endif /* CONFIG_AP_MODE */
 	case SIOCDEVPRIVATE:
 		ret = rtw_ioctl_wext_private(dev, rq);
@@ -12894,7 +12880,6 @@ int rtw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
 	case (SIOCDEVPRIVATE+1):
 		ret = rtw_android_priv_cmd(dev, rq, cmd);
 		break;
-#endif
 	default:
 		ret = -EOPNOTSUPP;
 		break;
@@ -12902,4 +12887,3 @@ int rtw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
 
 	return ret;
 }
-

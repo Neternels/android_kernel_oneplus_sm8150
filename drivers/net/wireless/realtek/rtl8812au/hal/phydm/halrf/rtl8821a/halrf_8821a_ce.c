@@ -16,11 +16,14 @@
 #include "mp_precomp.h"
 #include "../../phydm_precomp.h"
 
+
+
 /*---------------------------Define Local Constant---------------------------*/
 /* 2010/04/25 MH Define the max tx power tracking tx agc power. */
 #define		ODM_TXPWRTRACK_MAX_IDX8821A		6
 
 /*---------------------------Define Local Constant---------------------------*/
+
 
 /* 3 ============================================================
  * 3 Tx Power Tracking

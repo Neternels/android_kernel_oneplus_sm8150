@@ -15,7 +15,6 @@
 #ifndef _RTW_XMIT_H_
 #define _RTW_XMIT_H_
 
-
 #if defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI)
 	#ifdef CONFIG_TX_AGGREGATION
 		#define MAX_XMITBUF_SZ	(20480)	/* 20k */
@@ -129,7 +128,6 @@
 		pattrib_iv[3] = ((keyidx & 0x3)<<6);\
 	} while (0)
 
-
 #define TKIP_IV(pattrib_iv, dot11txpn, keyidx)\
 	do {\
 		dot11txpn.val = dot11txpn.val == 0xffffffffffffULL ? 0 : (dot11txpn.val + 1);\
@@ -200,13 +198,16 @@
 	#define EARLY_MODE_INFO_SIZE	8
 #endif
 
-
 #if defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI)
 	#define TXDESC_OFFSET TXDESC_SIZE
 #endif
 
 #ifdef CONFIG_USB_HCI
-	#define PACKET_OFFSET_SZ (8)
+	#ifdef USB_PACKET_OFFSET_SZ
+		#define PACKET_OFFSET_SZ (USB_PACKET_OFFSET_SZ)
+	#else
+		#define PACKET_OFFSET_SZ (8)
+	#endif
 	#define TXDESC_OFFSET (TXDESC_SIZE + PACKET_OFFSET_SZ)
 #endif
 
@@ -463,7 +464,7 @@ struct pkt_attrib {
 #ifdef CONFIG_WMMPS_STA
 	u8	trigger_frame;
 #endif /* CONFIG_WMMPS_STA */
-	
+
 	struct sta_info *psta;
 
 	u8 rtsen;
@@ -492,6 +493,7 @@ struct pkt_attrib {
 	 */
 	u8 bf_pkt_type;
 #endif
+	u8  inject; /* == a5 if injected */
 
 };
 #endif
@@ -559,7 +561,6 @@ enum {
 	RTW_SCTX_DONE_CMD_DROP,
 	RTX_SCTX_CSTR_WAIT_RPT2,
 };
-
 
 void rtw_sctx_init(struct submit_ctx *sctx, int timeout_ms);
 int rtw_sctx_wait(struct submit_ctx *sctx, const char *msg);
@@ -641,7 +642,6 @@ struct xmit_buf {
 
 };
 
-
 struct xmit_frame {
 	_list	list;
 
@@ -684,12 +684,10 @@ struct tx_servq {
 	int qcnt;
 };
 
-
 struct sta_xmit_priv {
 	_lock	lock;
 	sint	option;
 	sint	apsd_setting;	/* When bit mask is on, the associated edca queue supports APSD. */
-
 
 	/* struct tx_servq blk_q[MAX_NUMBLKS]; */
 	struct tx_servq	be_q;			/* priority == 0,3 */
@@ -704,7 +702,6 @@ struct sta_xmit_priv {
 	/* uint	sta_tx_bytes; */
 	/* u64	sta_tx_pkts; */
 	/* uint	sta_tx_fail; */
-
 
 };
 
@@ -971,15 +968,12 @@ s32 update_tdls_attrib(_adapter *padapter, struct pkt_attrib *pattrib);
 s32 _rtw_init_hw_txqueue(struct hw_txqueue *phw_txqueue, u8 ac_tag);
 void _rtw_init_sta_xmit_priv(struct sta_xmit_priv *psta_xmitpriv);
 
-
 s32 rtw_txframes_pending(_adapter *padapter);
 s32 rtw_txframes_sta_ac_pending(_adapter *padapter, struct pkt_attrib *pattrib);
 void rtw_init_hwxmits(struct hw_xmit *phwxmit, sint entry);
 
-
 s32 _rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, _adapter *padapter);
 void _rtw_free_xmit_priv(struct xmit_priv *pxmitpriv);
-
 
 void rtw_alloc_hwxmits(_adapter *padapter);
 void rtw_free_hwxmits(_adapter *padapter);

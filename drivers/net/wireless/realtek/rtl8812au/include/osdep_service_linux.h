@@ -123,7 +123,7 @@
 	typedef struct urb   *PURB;
 	#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 22))
 		#ifdef CONFIG_USB_SUSPEND
-			#define CONFIG_AUTOSUSPEND	0
+			#define CONFIG_AUTOSUSPEND	1
 		#endif
 	#endif
 #endif
