@@ -9,6 +9,23 @@ Build Number: 3.0
 ```
 ## Changelog
 ```
+-NetErnels-5.0
+* Added fix for coordinate read bit shift from linux stable
+* Kernel upstreamed to 234
+* Merged latest android-4.14-q from Google Common
+* Merged latest LA.UM.8.1.r1-17100-sm8150.0 for Audio-Kernel
+* Merged latest LA.UM.8.1.r1-17100-sm8150.0 for Data-Kernel
+* Merged latest LA.UM.8.1.r1-17100-sm8150.0 for Qcacld-3.0
+* Merged latest LA.UM.8.1.r1-17100-sm8150.0 for Qca-WiFi-Host-Cmn
+* Merged latest LA.UM.8.1.r1-17100-sm8150.0 for Fw-Api
+* Merged latest ASB-2021-05-05_4.14-q from Google Common
+* Merged latest WireGuard v1.0.20210424
+* Added device tree blob overlay image
+* Added hid-keyboard and wireless-firmware
+* Added docker support(not tested) 
+* Added RTL88XX drivers as module
+* Added Simulated MAC80211 Radio as module
+
 -3.1:
 -Kernel upstreamed to 4.14.227
 -Lots of scheduler patches from mainline
