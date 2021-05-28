@@ -2927,7 +2927,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
 	 * races with concurrent log syncs that can lead to failure to update
 	 * log root item because it was not created yet.
 	 */
-	ret = update_log_root(trans, log);
+	ret = update_log_root(trans, log, &new_root_item);
 	/*
 	 * IO has been started, blocks of the log tree have WRITTEN flag set
 	 * in their headers. new modifications of the log will be written to
