@@ -1,14 +1,20 @@
 ## Build Information
 ```
-Kernel: NetErnels
+Kernel: NetErnels Kernel
 Type: Stable
 Device: OnePlus 7/T/Pro
 Compiler: Proton Clang 13.0.0
 Branch: master
-Build Number: 5.0
+Build Number: 6.0
 ```
 ## Changelog
 ```
+-NetErnels-6.0
+* Enabled almk
+* Fixed boot-to-crashdump when connected phone to USB
+* Kernel upstreamed to 235
+* Merged latest android-4.14-q from Google Common
+
 -NetErnels-5.0
 * Added fix for coordinate read bit shift from linux stable
 * Kernel upstreamed to 234

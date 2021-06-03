@@ -1,11 +1,11 @@
 {
   "kernel": {
     "name": "NetErnels Kernel",
-    "version": "NetErnels-5.0",
-    "link": "https://github.com/neternels/android_kernel_oneplus_sm8150/releases/download/NetErnels-5.0/NetErnels-unified_op7-4.14.234-signed.zip",
+    "version": "NetErnels-6.0",
+    "link": "https://github.com/neternels/android_kernel_oneplus_sm8150/releases/download/NetErnels-6.0/NetErnels-unified_op7-4.14.235-signed.zip",
     "changelog_url": "https://raw.githubusercontent.com/neternels/android_kernel_oneplus_sm8150/master/ota/changelog",
-    "date": "2021-05-28",
-    "sha1": "ec37dc43bbff70ecb576a22a6df2566d935c2a24"
+    "date": "2021-06-03",
+    "sha1": "b1759fd1a9e3373377e237946db9c7e66a651768"
   },
   "support": {
     "link": "https://t.me/neternels_chat"
