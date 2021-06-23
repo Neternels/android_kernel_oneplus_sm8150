@@ -88,7 +88,7 @@ config DOCKER
 
 	select CPUSETS
 
-	select MEMCG
+	select BLK_DEV_THROTTLING
 
 	select KEYS
 
@@ -107,6 +107,8 @@ config DOCKER
 	select NETFILTER_XT_MATCH_ADDRTYPE
 
 	select NETFILTER_XT_MATCH_CONNTRACK
+
+	select NETFILTER_XT_MATCH_IPVS
 
 	select NF_NAT
 
@@ -134,18 +136,23 @@ config DOCKER
 
 	select IP_VS_NFCT
 
+	select IP_VS_RR
+
 	select VXLAN
 
 	select IPVLAN
+
+	select VLAN_8021Q
+
+	select BRIDGE_VLAN_FILTERING
+
+	select SECURITY_APPARMOR
 
 	select MACVLAN
 
 	select DUMMY
 
 	select DEVPTS_MULTIPLE_INSTANCES
-
-	select MEMCG_KMEM
-
 
 
 config DOCKER_STATISTICS
