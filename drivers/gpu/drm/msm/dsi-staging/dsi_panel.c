@@ -5025,22 +5025,22 @@ int dsi_panel_switch(struct dsi_panel *panel)
 	if (rc)
 		pr_err("[%s] failed to send DSI_CMD_SET_TIMING_SWITCH cmds, rc=%d\n",
 		       panel->name, rc);
-	pr_err("Send DSI_CMD_SET_TIMING_SWITCH cmds\n");
-	pr_err("panel->cur_mode->timing->h_active = %d\n", panel->cur_mode->timing.h_active);
+	pr_debug("Send DSI_CMD_SET_TIMING_SWITCH cmds\n");
+	pr_debug("panel->cur_mode->timing->h_active = %d\n", panel->cur_mode->timing.h_active);
 
 	if (gamma_read_flag == GAMMA_READ_SUCCESS) {
 		if (mode_fps == 90) {
 			rc = dsi_panel_tx_gamma_cmd_set(panel, DSI_GAMMA_CMD_SET_SWITCH_90HZ);
-			pr_err("Send DSI_GAMMA_CMD_SET_SWITCH_90HZ cmds\n");
+			pr_debug("Send DSI_GAMMA_CMD_SET_SWITCH_90HZ cmds\n");
 			if (rc)
-				pr_err("[%s] Failed to send DSI_GAMMA_CMD_SET_SWITCH_90HZ cmds, rc=%d\n",
+				pr_debug("[%s] Failed to send DSI_GAMMA_CMD_SET_SWITCH_90HZ cmds, rc=%d\n",
 					panel->name, rc);
 		}
 		else {
 			rc = dsi_panel_tx_gamma_cmd_set(panel, DSI_GAMMA_CMD_SET_SWITCH_60HZ);
-			pr_err("Send DSI_GAMMA_CMD_SET_SWITCH_60HZ cmds\n");
+			pr_debug("Send DSI_GAMMA_CMD_SET_SWITCH_60HZ cmds\n");
 			if (rc)
-				pr_err("[%s] Failed to send DSI_GAMMA_CMD_SET_SWITCH_60HZ cmds, rc=%d\n",
+				pr_debug("[%s] Failed to send DSI_GAMMA_CMD_SET_SWITCH_60HZ cmds, rc=%d\n",
 					panel->name, rc);
 		}
 	}
@@ -5058,7 +5058,7 @@ int dsi_panel_post_switch(struct dsi_panel *panel)
 	}
 
 	mutex_lock(&panel->panel_lock);
-    pr_err("%s: Send the command DSI_CMD_SET_POST_TIMING_SWITCH \n", __func__);
+    pr_debug("%s: Send the command DSI_CMD_SET_POST_TIMING_SWITCH \n", __func__);
 	rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_POST_TIMING_SWITCH);
 	if (rc)
 		pr_err("[%s] failed to send DSI_CMD_SET_POST_TIMING_SWITCH cmds, rc=%d\n",
@@ -5084,11 +5084,11 @@ int dsi_panel_enable(struct dsi_panel *panel)
 
 	if ((EVT2_113MHZ_OSC == panel->panel_stage_info) || (PVT_113MHZ_OSC == panel->panel_stage_info) || (PVT_113MHZ_OSC_XTALK == panel->panel_stage_info)) {
 		rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_113MHZ_OSC_ON);
-		pr_err("Send DSI_CMD_SET_113MHZ_OSC_ON cmds\n");
+		pr_debug("Send DSI_CMD_SET_113MHZ_OSC_ON cmds\n");
 	}
 	else {
 		rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_ON);
-		pr_err("Send DSI_CMD_SET_ON cmds\n");
+		pr_debug("Send DSI_CMD_SET_ON cmds\n");
 	}
 	if (rc) {
 		pr_err("[%s] failed to send DSI_CMD_SET_ON cmds, rc=%d\n",
@@ -5099,7 +5099,7 @@ int dsi_panel_enable(struct dsi_panel *panel)
 	if (panel->hw_type == DSI_PANEL_SAMSUNG_S6E3HC2 && (gamma_read_flag == GAMMA_READ_SUCCESS)) {
 		if (mode_fps == 60) {
 			rc = dsi_panel_tx_gamma_cmd_set(panel, DSI_GAMMA_CMD_SET_SWITCH_60HZ);
-			pr_err("Send DSI_GAMMA_CMD_SET_SWITCH_60HZ cmds\n");
+			pr_debug("Send DSI_GAMMA_CMD_SET_SWITCH_60HZ cmds\n");
 			if (rc)
 				pr_err("[%s] Failed to send DSI_GAMMA_CMD_SET_SWITCH_60HZ cmds, rc=%d\n",
 					panel->name, rc);
@@ -5107,7 +5107,7 @@ int dsi_panel_enable(struct dsi_panel *panel)
 	}
 
 	panel->panel_initialized = true;
-	pr_err("dsi_panel_enable aod_mode =%d\n",panel->aod_mode);
+	pr_debug("dsi_panel_enable aod_mode =%d\n",panel->aod_mode);
 
 	mutex_unlock(&panel->panel_lock);
 	if(panel->aod_mode==2){
