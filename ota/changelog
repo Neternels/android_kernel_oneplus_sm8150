@@ -9,6 +9,30 @@ Build Number: 6.0
 ```
 ## Changelog
 ```
+-NetErnels-7.0
+* Added back xt_qtaguid module
+* Fixed wlan wakelocks
+* Picked mm commits related to SLMK
+* Introduced srandom
+* Picked optimization commit
+* Enabled Network In Container
+* Kernel Upstreamed to 238
+* Merged latest android-4.14-q from Google Common
+* Merged latest LA.UM.8.1.r1-17400-sm8150.0 for Audio-Kernel
+* Merged latest LA.UM.8.1.r1-17400-sm8150.0 for Qcacld-3.0
+* Merged latest LA.UM.8.1.r1-17400-sm8150.0 for Qca-WiFi-Host-Cmn
+* Merged latest LA.UM.8.1.r1-17400-sm8150.0 for Fw-Api
+* Merged latest ASB-2021-06-05_4.14-q from Google Common
+* Merged latest WireGuard v1.0.20210606
+* Set PELT Half-Life to 8ms
+* Scheduler patches from sultan
+* Added RTL8812AU as module
+* Added RTL8814AU as module
+* Added RTL8188EUS as module
+* Added RTL8712U as module
+* Added RTL8188EU as module
+* Added RTS5208 as module
+
 -NetErnels-6.0
 * Enabled almk
 * Fixed boot-to-crashdump when connected phone to USB
