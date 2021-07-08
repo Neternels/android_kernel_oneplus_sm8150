@@ -44,8 +44,6 @@
 
 #define DEFAULT_BUS_P 25
 
-static bool default_pwrlevel_set = false;
-
 /* Order deeply matters here because reasons. New entries go on the end */
 static const char * const clocks[] = {
 	"src_clk",
@@ -2562,11 +2560,6 @@ static int kgsl_pwrctrl_enable(struct kgsl_device *device)
 	struct kgsl_pwrctrl *pwr = &device->pwrctrl;
 	int level, status;
 
-	if (!default_pwrlevel_set) {
-		pwr->default_pwrlevel = 6;
-		default_pwrlevel_set = true;
-	}
-	
 	if (pwr->wakeup_maxpwrlevel) {
 		level = pwr->max_pwrlevel;
 		pwr->wakeup_maxpwrlevel = 0;
