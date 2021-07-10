@@ -5,10 +5,15 @@ Type: Stable
 Device: OnePlus 7/T/Pro
 Compiler: Proton Clang 13.0.0
 Branch: master
-Build Number: 6.0
+Build Number: 8.0
 ```
 ## Changelog
 ```
+-NetErnels-8.0
+* Fixed overheating in OOS due to brain_service
+* Added sysfs switch driver
+* Fixed logspam regarding DSI
+
 -NetErnels-7.0
 * Added back xt_qtaguid module
 * Fixed wlan wakelocks
