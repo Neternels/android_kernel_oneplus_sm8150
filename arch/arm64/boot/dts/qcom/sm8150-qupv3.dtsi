@@ -408,7 +408,7 @@
 		pinctrl-1 = <&qupv3_se12_2uart_sleep>;
 		interrupts = <GIC_SPI 357 0>;
 		qcom,wrapper-core = <&qupv3_1>;
-		status = "disabled";
+		status = "enabled";
 	};
 
 	/* 4-wire UART */
@@ -431,7 +431,7 @@
 				<&tlmm 46 0>;
 		qcom,wrapper-core = <&qupv3_2>;
 		qcom,wakeup-byte = <0xFD>;
-		status = "disabled";
+		status = "enabled";
 	};
 
 	/* I2C */
