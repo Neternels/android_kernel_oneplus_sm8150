@@ -243,18 +243,6 @@ done:
 	}
 }
 
-static pgprot_t __acpi_get_writethrough_mem_attribute(void)
-{
-	/*
-	 * Although UEFI specifies the use of Normal Write-through for
-	 * EFI_MEMORY_WT, it is seldom used in practice and not implemented
-	 * by most (all?) CPUs. Rather than allocate a MAIR just for this
-	 * purpose, emit a warning and use Normal Non-cacheable instead.
-	 */
-	pr_warn_once("No MAIR allocation for EFI_MEMORY_WT; treating as Normal Non-cacheable\n");
-	return __pgprot(PROT_NORMAL_NC);
-}
-
 #ifdef CONFIG_ACPI_APEI
 pgprot_t arch_apei_get_mem_attribute(phys_addr_t addr)
 {
